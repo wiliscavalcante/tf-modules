@@ -153,35 +153,35 @@ resource "aws_ecr_lifecycle_policy" "this" {
 # Public Repository
 ################################################################################
 
-# resource "aws_ecrpublic_repository" "this" {
-#   count = local.create_public_repository ? 1 : 0
+resource "aws_ecrpublic_repository" "this" {
+  count = local.create_public_repository ? 1 : 0
 
-#   repository_name = var.repository_name
+  repository_name = var.repository_name
 
-#   dynamic "catalog_data" {
-#     for_each = length(var.public_repository_catalog_data) > 0 ? [var.public_repository_catalog_data] : []
+  dynamic "catalog_data" {
+    for_each = length(var.public_repository_catalog_data) > 0 ? [var.public_repository_catalog_data] : []
 
-#     content {
-#       about_text        = try(catalog_data.value.about_text, null)
-#       architectures     = try(catalog_data.value.architectures, null)
-#       description       = try(catalog_data.value.description, null)
-#       logo_image_blob   = try(catalog_data.value.logo_image_blob, null)
-#       operating_systems = try(catalog_data.value.operating_systems, null)
-#       usage_text        = try(catalog_data.value.usage_text, null)
-#     }
-#   }
-# }
+    content {
+      about_text        = try(catalog_data.value.about_text, null)
+      architectures     = try(catalog_data.value.architectures, null)
+      description       = try(catalog_data.value.description, null)
+      logo_image_blob   = try(catalog_data.value.logo_image_blob, null)
+      operating_systems = try(catalog_data.value.operating_systems, null)
+      usage_text        = try(catalog_data.value.usage_text, null)
+    }
+  }
+}
 
-# ################################################################################
-# # Public Repository Policy
-# ################################################################################
+################################################################################
+# Public Repository Policy
+################################################################################
 
-# resource "aws_ecrpublic_repository_policy" "example" {
-#   count = local.create_public_repository ? 1 : 0
+resource "aws_ecrpublic_repository_policy" "example" {
+  count = local.create_public_repository ? 1 : 0
 
-#   repository_name = aws_ecrpublic_repository.this[0].repository_name
-#   policy          = var.create_repository_policy ? data.aws_iam_policy_document.repository[0].json : var.repository_policy
-# }
+  repository_name = aws_ecrpublic_repository.this[0].repository_name
+  policy          = var.create_repository_policy ? data.aws_iam_policy_document.repository[0].json : var.repository_policy
+}
 
 ################################################################################
 # Registry Policy

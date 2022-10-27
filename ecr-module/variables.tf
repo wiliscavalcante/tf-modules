@@ -1,17 +1,17 @@
 variable "create" {
-  description = "Determines whether resources will be created (affects all resources)"
+  description = "Determina se os recursos serão criados (afeta todos os recursos)"
   type        = bool
   default     = true
 }
 
 variable "tags" {
-  description = "A map of tags to add to all resources"
+  description = "Um mapa de tags para adicionar a todos os recursos"
   type        = map(string)
   default     = {}
 }
 
 variable "repository_type" {
-  description = "The type of repository to create. Either `public` or `private`"
+  description = "O tipo de repositório a ser criado. Seja 'público' ou 'privado'"
   type        = string
   default     = "private"
 }
@@ -21,49 +21,49 @@ variable "repository_type" {
 ################################################################################
 
 variable "create_repository" {
-  description = "Determines whether a repository will be created"
+  description = "Determina se um repositório será criado"
   type        = bool
   default     = true
 }
 
 variable "repository_name" {
-  description = "The name of the repository"
+  description = "Nome do repositório"
   type        = string
   default     = ""
 }
 
 variable "repository_image_tag_mutability" {
-  description = "The tag mutability setting for the repository. Must be one of: `MUTABLE` or `IMMUTABLE`. Defaults to `IMMUTABLE`"
+  description = "A configuração de mutabilidade da tag para o repositório. Deve ser um dos seguintes: `MUTABLE` ou `IMMUTABLE`. O padrão é `IMMUTABLE`"
   type        = string
   default     = "IMMUTABLE"
 }
 
 variable "repository_encryption_type" {
-  description = "The encryption type for the repository. Must be one of: `KMS` or `AES256`. Defaults to `AES256`"
+  description = "O tipo de criptografia para o repositório. Deve ser um dos seguintes: `KMS` ou `AES256`. O padrão é `AES256`"
   type        = string
   default     = null
 }
 
 variable "repository_kms_key" {
-  description = "The ARN of the KMS key to use when encryption_type is `KMS`. If not specified, uses the default AWS managed key for ECR"
+  description = "O ARN da chave KMS a ser usada quando o tipo de criptografia for `KMS`. Se não for especificado, usa a chave gerenciada padrão da AWS para ECR"
   type        = string
   default     = null
 }
 
 variable "repository_image_scan_on_push" {
-  description = "Indicates whether images are scanned after being pushed to the repository (`true`) or not scanned (`false`)"
+  description = "Indica se as imagens são scaneadas após serem enviadas para o repositório (`true`) ou não scaneadas (`false`)"
   type        = bool
   default     = true
 }
 
 variable "repository_policy" {
-  description = "The JSON policy to apply to the repository. If not specified, uses the default policy"
+  description = "A política JSON a ser aplicada ao repositório. Se não especificado, usa a política padrão"
   type        = string
   default     = null
 }
 
 variable "repository_force_delete" {
-  description = "If `true`, will delete the repository even if it contains images. Defaults to `false`"
+  description = "Se `true`, excluirá o repositório mesmo que contenha imagens. O padrão é `falso`"
   type        = bool
   default     = null
 }
@@ -73,25 +73,25 @@ variable "repository_force_delete" {
 ################################################################################
 
 variable "attach_repository_policy" {
-  description = "Determines whether a repository policy will be attached to the repository"
+  description = "Determina se uma política de repositório será anexada ao repositório"
   type        = bool
   default     = true
 }
 
 variable "create_repository_policy" {
-  description = "Determines whether a repository policy will be created"
+  description = "Determina se uma política de repositório será criada"
   type        = bool
   default     = true
 }
 
 variable "repository_read_access_arns" {
-  description = "The ARNs of the IAM users/roles that have read access to the repository"
+  description = "Os ARNs dos usuários/funções do IAM que têm acesso de leitura ao repositório"
   type        = list(string)
   default     = []
 }
 
 variable "repository_read_write_access_arns" {
-  description = "The ARNs of the IAM users/roles that have read/write access to the repository"
+  description = "Os ARNs dos usuários/funções do IAM que têm acesso de leitura/gravação ao repositório"
   type        = list(string)
   default     = []
 }
@@ -101,13 +101,13 @@ variable "repository_read_write_access_arns" {
 ################################################################################
 
 variable "create_lifecycle_policy" {
-  description = "Determines whether a lifecycle policy will be created"
+  description = "Determina se uma política de ciclo de vida será criada"
   type        = bool
   default     = true
 }
 
 variable "repository_lifecycle_policy" {
-  description = "The policy document. This is a JSON formatted string. See more details about [Policy Parameters](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) in the official AWS docs"
+  description = "O documento de política. Esta é uma string formatada em JSON. Veja mais detalhes sobre [Parâmetros de política](http://docs.aws.amazon.com/AmazonECR/latest/userguide/LifecyclePolicies.html#lifecycle_policy_parameters) nos documentos oficiais da AWS"
   type        = string
   default     = ""
 }
@@ -117,7 +117,7 @@ variable "repository_lifecycle_policy" {
 ################################################################################
 
 variable "public_repository_catalog_data" {
-  description = "Catalog data configuration for the repository"
+  description = "Configuração de dados do catálogo para o repositório"
   type        = any
   default     = {}
 }
@@ -127,13 +127,13 @@ variable "public_repository_catalog_data" {
 ################################################################################
 
 variable "create_registry_policy" {
-  description = "Determines whether a registry policy will be created"
+  description = "Determina se uma política de registro será criada"
   type        = bool
   default     = false
 }
 
 variable "registry_policy" {
-  description = "The policy document. This is a JSON formatted string"
+  description = "O documento de política. Esta é uma string formatada em JSON"
   type        = string
   default     = null
 }
@@ -143,7 +143,7 @@ variable "registry_policy" {
 ################################################################################
 
 variable "registry_pull_through_cache_rules" {
-  description = "List of pull through cache rules to create"
+  description = "Lista de regras de cache pull through para criar"
   type        = map(map(string))
   default     = {}
 }
@@ -153,19 +153,19 @@ variable "registry_pull_through_cache_rules" {
 ################################################################################
 
 variable "manage_registry_scanning_configuration" {
-  description = "Determines whether the registry scanning configuration will be managed"
+  description = "Determina se a configuração de verificação do registry será gerenciada"
   type        = bool
   default     = false
 }
 
 variable "registry_scan_type" {
-  description = "the scanning type to set for the registry. Can be either `ENHANCED` or `BASIC`"
+  description = "o tipo de varredura a ser definido para o registro. Pode ser `ENHANCED` ou `BASIC`"
   type        = string
   default     = "ENHANCED"
 }
 
 variable "registry_scan_rules" {
-  description = "One or multiple blocks specifying scanning rules to determine which repository filters are used and at what frequency scanning will occur"
+  description = "Um ou vários blocos especificando regras de varredura para determinar quais filtros de repositório são usados ​​e com que frequência a varredura ocorrerá"
   type        = any
   default     = []
 }
@@ -175,13 +175,13 @@ variable "registry_scan_rules" {
 ################################################################################
 
 variable "create_registry_replication_configuration" {
-  description = "Determines whether a registry replication configuration will be created"
+  description = "Determina se uma configuração de replicação do registro será criada"
   type        = bool
   default     = false
 }
 
 variable "registry_replication_rules" {
-  description = "The replication rules for a replication configuration. A maximum of 10 are allowed"
+  description = "As regras de replicação para uma configuração de replicação. São permitidos no máximo 10"
   type        = any
   default     = []
 }
