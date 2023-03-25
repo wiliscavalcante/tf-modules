@@ -32,6 +32,7 @@ variable "versioning" {
 variable "tags" {
   description = "(Optional) A mapping of tags to assign to the bucket."
   type        = map(string)
+  default     = {}
 }
 
 variable "request_payer" {
