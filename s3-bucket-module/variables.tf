@@ -1,9 +1,20 @@
-# variable "create_bucket" {
-#   description = "Controls if S3 bucket should be created"
-#   type        = bool
-#   default     = true
-# }
+variable "enable_sse" {
+  description = "Enable server-side encryption on S3 bucket"
+  type        = bool
+  default     = false
+}
 
+variable "sse_algorithm" {
+  description = "The server-side encryption algorithm to use. Valid values: AES256, aws:kms"
+  type        = string
+  default     = "AES256"
+}
+
+variable "kms_master_key_id" {
+  description = "The ID of the AWS KMS customer master key (CMK) to use for encryption."
+  type        = string
+  default     = ""
+}
 
 
 variable "bucket_name" {
