@@ -1,12 +1,12 @@
-variable "create_bucket" {
-  description = "Controls if S3 bucket should be created"
-  type        = bool
-  default     = true
-}
+# variable "create_bucket" {
+#   description = "Controls if S3 bucket should be created"
+#   type        = bool
+#   default     = true
+# }
 
 
 
-variable "bucket" {
+variable "bucket_name" {
   description = "Name of the bucket"
   type        = string
 }
