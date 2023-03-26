@@ -12,7 +12,21 @@ resource "aws_s3_bucket" "this" {
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
   bucket = aws_s3_bucket.this.id
-  server_side_encryption_configuration = var.server_side_encryption_configuration
+
+  dynamic "rule" {
+    for_each = var.server_side_encryption_configuration
+
+    content {
+      dynamic "apply_server_side_encryption_by_default" {
+        for_each = rule.value.apply_server_side_encryption_by_default
+
+        content {
+          sse_algorithm = apply_server_side_encryption_by_default.value.sse_algorithm
+          kms_master_key_id = apply_server_side_encryption_by_default.value.kms_master_key_id
+        }
+      }
+    }
+  }
 }
 
 ##########################
