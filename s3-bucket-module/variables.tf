@@ -13,6 +13,11 @@ variable "enable_encryption" {
   type        = bool
   default     = true
 }
+variable "kms_master_key_id" {
+  description = "The ID of the KMS master key to use for server-side encryption."
+  type        = string
+  default     = ""
+}
 
 variable "bucket_name" {
   description = "Name of the bucket"
