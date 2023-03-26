@@ -1,21 +1,18 @@
-variable "enable_sse" {
-  description = "Enable server-side encryption on S3 bucket"
-  type        = bool
-  default     = false
-}
-
-variable "sse_algorithm" {
-  description = "The server-side encryption algorithm to use. Valid values: AES256, aws:kms"
+variable "server_side_encryption" {
+  description = "The type of server-side encryption to use for the bucket."
   type        = string
   default     = "AES256"
+  validation {
+    condition = can(regex("^(AES256|aws:kms)$", var.server_side_encryption))
+    error_message = "Server-side encryption must be 'AES256' or 'aws:kms'."
+  }
 }
 
-variable "kms_master_key_id" {
-  description = "The ID of the AWS KMS customer master key (CMK) to use for encryption."
-  type        = string
-  default     = ""
+variable "enable_encryption" {
+  description = "Specifies whether to enable server-side encryption for the bucket."
+  type        = bool
+  default     = true
 }
-
 
 variable "bucket_name" {
   description = "Name of the bucket"
