@@ -9,6 +9,7 @@ variable "sse_algorithm" {
 }
 variable "arn_kms" {
   type = string
+  default = {}
 }
 variable "key_enabled" {
   type = bool
