@@ -1,28 +1,27 @@
 variable "server_side_encryption_configuration" {
   description = "The server-side encryption configuration for the bucket."
-  type        = list(object({
-    apply_server_side_encryption_by_default = list(object({
-      sse_algorithm = string
-      kms_master_key_id = string
+  type = list(object({
+    rule = list(object({
+      apply_server_side_encryption_by_default = list(object({
+        sse_algorithm = string
+        kms_master_key_id = string
+      }))
     }))
   }))
   default = [
     {
-      apply_server_side_encryption_by_default = [
+      rule = [
         {
-          sse_algorithm = "AES256"
+          apply_server_side_encryption_by_default = [
+            {
+              sse_algorithm = "AES256"
+              kms_master_key_id = ""
+            }
+          ]
         }
       ]
     }
   ]
-  validation {
-    condition = length(var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default) > 0 && (
-        var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].sse_algorithm == "AES256" ||
-        var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].sse_algorithm == "aws:kms" &&
-        can(regex("arn:aws:kms:[a-z]{2}(-gov-[-a-z]+)?-[a-z]+-[0-9]:[0-9]{12}:key/.+", var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].kms_master_key_id))
-      )
-    error_message = "Invalid server-side encryption configuration."
-  }
 }
 
 variable "bucket_name" {
