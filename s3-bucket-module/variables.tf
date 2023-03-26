@@ -1,24 +1,32 @@
-variable "server_side_encryption" {
-  description = "The type of server-side encryption to use for the bucket."
-  type        = string
-  default     = "AES256"
+variable "server_side_encryption_configuration" {
+  description = "The server-side encryption configuration to use for the bucket."
+  type = list(object({
+    rule = list(object({
+      apply_server_side_encryption_by_default = list(object({
+        kms_master_key_id = string
+        sse_algorithm = string
+      }))
+    }))
+  }))
+  default = [
+    {
+      rule = [
+        {
+          apply_server_side_encryption_by_default = [
+            {
+              kms_master_key_id = ""
+              sse_algorithm = "AES256"
+            }
+          ]
+        }
+      ]
+    }
+  ]
   validation {
-    condition = can(regex("^(AES256|aws:kms)$", var.server_side_encryption))
-    error_message = "Server-side encryption must be 'AES256' or 'aws:kms'."
+    condition = can(index(var.server_side_encryption_configuration[0].rule[0].apply_server_side_encryption_by_default[0], "sse_algorithm"))
+    error_message = "sse_algorithm is required"
   }
 }
-
-variable "enable_encryption" {
-  description = "Specifies whether to enable server-side encryption for the bucket."
-  type        = bool
-  default     = true
-}
-variable "kms_master_key_id" {
-  description = "The ID of the KMS master key to use for server-side encryption."
-  type        = string
-  default     = ""
-}
-
 variable "bucket_name" {
   description = "Name of the bucket"
   type        = string
