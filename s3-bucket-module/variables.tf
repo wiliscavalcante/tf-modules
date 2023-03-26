@@ -1,30 +1,50 @@
 variable "server_side_encryption_configuration" {
-  description = "The server-side encryption configuration to use for the bucket."
-  type = list(object({
-    rule = list(object({
-      apply_server_side_encryption_by_default = list(object({
-        kms_master_key_id = string
-        sse_algorithm = string
-      }))
+  description = "The server-side encryption configuration for the bucket."
+  type        = list(object({
+    apply_server_side_encryption_by_default = list(object({
+      sse_algorithm = string
+      kms_master_key_id = string
     }))
   }))
   default = [
     {
-      rule = [
+      apply_server_side_encryption_by_default = [
         {
-          apply_server_side_encryption_by_default = [
-            {
-              kms_master_key_id = ""
-              sse_algorithm = "AES256"
-            }
-          ]
+          sse_algorithm = "AES256"
         }
       ]
     }
   ]
   validation {
-    condition = can(index(var.server_side_encryption_configuration[0].rule[0].apply_server_side_encryption_by_default[0], "sse_algorithm"))
-    error_message = "sse_algorithm is required"
+    condition = length(var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default) > 0 && (
+        var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].sse_algorithm == "AES256" ||
+        var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].sse_algorithm == "aws:kms" &&
+        can(regex("arn:aws:kms:[a-z]{2}(-gov-[-a-z]+)?-[a-z]+-[0-9]:[0-9]{12}:key/.+", var.server_side_encryption_configuration[0].apply_server_side_encryption_by_default[0].kms_master_key_id))
+      )
+    error_message = "Invalid server-side encryption configuration."
+  }
+}
+
+resource "aws_s3_bucket" "this" {
+  bucket = var.bucket_name
+}
+
+resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
+  bucket = aws_s3_bucket.this.id
+
+  dynamic "rule" {
+    for_each = var.server_side_encryption_configuration
+
+    content {
+      dynamic "apply_server_side_encryption_by_default" {
+        for_each = rule.value.apply_server_side_encryption_by_default
+
+        content {
+          sse_algorithm = apply_server_side_encryption_by_default.value.sse_algorithm
+          kms_master_key_id = apply_server_side_encryption_by_default.value.kms_master_key_id
+        }
+      }
+    }
   }
 }
 variable "bucket_name" {
