@@ -1,4 +1,4 @@
-ariable "sse_algorithm" {
+variable "sse_algorithm" {
   description = "The algorithm to use for server-side encryption"
   type        = string
   default     = "AES256"
