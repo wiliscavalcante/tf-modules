@@ -13,8 +13,8 @@ variable "tags" {
 }
 
 variable "policy" {
-  type        = string
-  default     = jsonencode({
+  type        = any
+  default     = {
     Version = "2012-10-17"
     Statement = [
       {
@@ -32,7 +32,7 @@ variable "policy" {
         Resource = "*"
       }
     ]
-  })
+  }
   description = "A política de acesso à chave KMS."
 }
 
