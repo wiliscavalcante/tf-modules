@@ -8,9 +8,15 @@ resource "aws_kms_key" "this" {
   enable_key_rotation    = true
   tags                   = var.tags
   policy                 = var.policy
-
-  alias {
-    name = var.alias_name
-  }
 }
+# Cria um alias para a chave KMS, se houver um nome especificado
+resource "aws_kms_alias" "this" {
+  depends_on = [
+    aws_kms_key.this
+  ]
 
+  count = var.alias_name != "" ? 1 : 0
+
+  name          = var.alias_name
+  target_key_id = aws_kms_key.this.key_id
+}
