@@ -14,25 +14,25 @@ variable "tags" {
 
 variable "policy" {
   type        = any
-  default     = {
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Principal = {
-          AWS = "arn:aws:iam::${data.aws_caller_identity.current.arn}:root"
-        }
-        Action = [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ]
-        Resource = "*"
-      }
-    ]
-  }
+#   default     = {
+#     Version = "2012-10-17"
+#     Statement = [
+#       {
+#         Effect = "Allow"
+#         Principal = {
+#           AWS = "arn:aws:iam::${data.aws_caller_identity.current.arn}:root"
+#         }
+#         Action = [
+#           "kms:Encrypt",
+#           "kms:Decrypt",
+#           "kms:ReEncrypt*",
+#           "kms:GenerateDataKey*",
+#           "kms:DescribeKey"
+#         ]
+#         Resource = "*"
+#       }
+#     ]
+#   }
   description = "A política de acesso à chave KMS."
 }
 
