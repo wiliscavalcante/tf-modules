@@ -4,6 +4,7 @@ resource "aws_kms_key" "this" {
   key_usage              = var.key_usage
   customer_master_key_spec           = var.customer_master_key_spec
   enable_key_rotation    = var.enable_key_rotation
+  multi_region                       = var.multi_region
   tags                   = var.tags
   policy = jsonencode(var.policy)
 }
