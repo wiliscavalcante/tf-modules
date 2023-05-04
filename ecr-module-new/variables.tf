@@ -1,28 +1,24 @@
-variable "repository_name" {
-  description = "O nome do repositório do ECR."
+variable "name" {
   type        = string
+  description = "O nome do repositório ECR."
 }
 
 variable "scan_on_push" {
-  description = "Habilita ou desabilita a verificação de imagem na submissão."
   type        = bool
-  default     = false
+  description = "Indica se o escaneamento de imagens será ativado ao realizar um push para o repositório."
 }
 
 variable "image_tag_mutability" {
-  description = "O tipo de mutabilidade das tags de imagem."
   type        = string
-  default     = "MUTABLE"
+  description = "Indica se as tags de imagens serão mutáveis ou imutáveis."
 }
 
-variable "lifecycle_policy_text" {
-  description = "O texto da política de ciclo de vida do ECR."
-  type        = string
-  default     = null
-}
-
-variable "lifecycle_policy_enabled" {
-  description = "Habilita ou desabilita a política de ciclo de vida."
-  type        = bool
-  default     = false
+variable "lifecycle_policy" {
+  type        = list(object({
+    rulePriority = number
+    description  = string
+    selection    = map(string)
+    action       = map(string)
+  }))
+  description = "A política de ciclo de vida a ser aplicada ao repositório ECR."
 }
