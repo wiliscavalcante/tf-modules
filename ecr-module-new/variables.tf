@@ -20,8 +20,8 @@ variable "tags" {
   default     = {}
   description = "Tags personalizadas para o repositório"
 }
-variable "enable_lifecycle_policy" {
-  type        = bool
-  default     = false
-  description = "Ativa ou desativa a criação de um lifecycle policy para o repositório ECR"
-}
+# variable "enable_lifecycle_policy" {
+#   type        = bool
+#   default     = false
+#   description = "Ativa ou desativa a criação de um lifecycle policy para o repositório ECR"
+# }
