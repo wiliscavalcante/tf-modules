@@ -43,3 +43,8 @@ variable "enable_key_rotation" {
   type        = bool
   default     = true
 }
+variable "multi_region" {
+  description = "Indica se a chave KMS é uma chave multi-região (`true`) ou regional (`false`). O valor padrão é `false`"
+  type        = bool
+  default     = false
+}
