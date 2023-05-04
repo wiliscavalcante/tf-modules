@@ -8,3 +8,26 @@ resource "aws_ecr_repository" "this" {
 
   tags = var.tags
 }
+if var.enable_lifecycle_policy {
+  resource "aws_ecr_lifecycle_policy" "private_repo_lifecycle_policy" {
+    repository = aws_ecr_repository.private_repo.name
+
+    policy = jsonencode({
+      rules = [
+        {
+          rulePriority      = 1
+          description       = "Expire images older than 7 days"
+          selection         = {
+            tagStatus = "any"
+            countType = "sinceImagePushed"
+            countUnit = "days"
+            countNumber = 7
+          }
+          action = {
+            type = "expire"
+          }
+        }
+      ]
+    })
+  }
+}
