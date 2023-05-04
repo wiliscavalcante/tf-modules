@@ -9,7 +9,7 @@ resource "aws_ecr_repository" "this" {
   tags = var.tags
 }
 if var.enable_lifecycle_policy {
-  resource "aws_ecr_lifecycle_policy" "private_repo_lifecycle_policy" {
+  resource "aws_ecr_lifecycle_policy" "this" {
     repository = aws_ecr_repository.private_repo.name
 
     policy = jsonencode({
