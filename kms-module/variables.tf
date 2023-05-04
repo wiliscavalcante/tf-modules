@@ -27,6 +27,11 @@ variable "enable_key_rotation" {
   type        = bool
   default     = true
 }
+variable "environment" {
+  type        = string
+  description = "O ambiente onde a chave KMS está sendo criada."
+  default     = "dev"
+}
 
 variable "key_usage" {
   description = "Especifica o uso pretendido da chave. Valores válidos: `ENCRYPT_DECRYPT` ou `SIGN_VERIFY`. O valor padrão é `ENCRYPT_DECRYPT`."
