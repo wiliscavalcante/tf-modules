@@ -13,7 +13,7 @@ variable "tags" {
 }
 
 variable "policy" {
-  type        = string
+  type        = any
   description = "A política de acesso à chave KMS."
 }
 
