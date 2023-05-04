@@ -10,9 +10,9 @@ resource "aws_ecr_repository" "this" {
 }
 resource "aws_ecr_lifecycle_policy" "this_lifecycle_policy" {
   count = var.enable_lifecycle_policy ? 1 : 0
-
+  
   repository = aws_ecr_repository.this.name
-
+  
   policy {
     rule {
       rule_priority = 1
