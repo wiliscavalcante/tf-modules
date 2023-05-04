@@ -25,3 +25,8 @@ variable "enable_lifecycle_policy" {
   default     = false
   description = "Ativa ou desativa a criação de um lifecycle policy para o repositório ECR"
 }
+variable "days_to_keep" {
+  description = "O número de dias para manter as imagens no repositório"
+  type        = number
+  default     = 30
+}
