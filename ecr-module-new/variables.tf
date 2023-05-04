@@ -1,27 +1,22 @@
-variable "repository_name" {
-  description = "Nome do repositório"
+variable "name" {
   type        = string
-}
-
-variable "tags" {
-  description = "Tags para o repositório"
-  type        = map(string)
+  description = "Nome do repositório no ECR"
 }
 
 variable "image_tag_mutability" {
-  description = "Política de mutabilidade de tags"
   type        = string
   default     = "MUTABLE"
+  description = "Define a mutabilidade das tags no repositório"
 }
 
-variable "image_scanning_configuration" {
-  description = "Configuração de varredura de imagens"
-  type        = map(string)
-  default     = null
+variable "scan_on_push" {
+  type        = bool
+  default     = true
+  description = "Ativa a verificação de imagem no repositório"
 }
 
-variable "lifecycle_policy" {
-  description = "Política de ciclo de vida"
+variable "tags" {
   type        = map(string)
-  default     = null
+  default     = {}
+  description = "Tags personalizadas para o repositório"
 }
