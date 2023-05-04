@@ -11,19 +11,23 @@ resource "aws_ecr_repository" "this" {
 resource "aws_ecr_lifecycle_policy" "this_lifecycle_policy" {
   count = var.enable_lifecycle_policy ? 1 : 0
   
-  repository = aws_ecr_repository.this.name
+  repository = aws_ecr_repository.private_repo.name
   
-  policy {
-    rule {
-      rule_priority = 1
-      description   = "Remove untagged images older than 30 days"
-      selection     = {
-        tag_status = "untagged"
-        created_at = "<= 30"
+  lifecycle_policy = jsonencode({
+    rules = [
+      {
+        rulePriority = 1
+        description = "Remove untagged images older than 30 days"
+        selection = {
+          tagStatus = "untagged"
+          countType = "sinceImagePushed"
+          countUnit = "days"
+          countNumber = 30
+        }
+        action = {
+          type = "expire"
+        }
       }
-      action {
-        type = "expire"
-      }
-    }
-  }
+    ]
+  })
 }
