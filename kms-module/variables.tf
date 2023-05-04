@@ -20,7 +20,7 @@ variable "policy" {
       {
         Effect = "Allow"
         Principal = {
-          AWS = "${data.aws_caller_identity.current.arn}"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.arn}:root"
         }
         Action = [
           "kms:Encrypt",
