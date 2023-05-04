@@ -19,7 +19,7 @@ variable "policy" {
 
 variable "alias_name" {
   type        = string
-  default     = ""
+  default     = "alias/my-kms-alias"
   description = "O nome do alias a ser criado para a chave KMS."
 }
 
