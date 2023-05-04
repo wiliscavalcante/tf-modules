@@ -1,28 +1,28 @@
 variable "repository_name" {
   type        = string
-  description = "Nome do repositório ECR"
+  description = "O nome do repositório ECR"
 }
 
-variable "repository_tags" {
-  type        = map(string)
-  default     = {}
-  description = "Um mapa de tags para adicionar ao repositório ECR"
-}
-
-variable "image_scanning_configuration" {
-  type        = map(string)
-  default     = {}
-  description = "As configurações de verificação de imagem para o repositório ECR"
+variable "scan_on_push" {
+  type        = bool
+  default     = true
+  description = "Indica se as imagens devem ser escaneadas após serem enviadas para o repositório"
 }
 
 variable "image_tag_mutability" {
   type        = string
   default     = "MUTABLE"
-  description = "A mutabilidade das tags de imagem no repositório ECR"
+  description = "Indica se as tags de imagem podem ser alteradas"
 }
 
-variable "lifecycle_policy" {
-  type        = optional(string)
-  default     = null
-  description = "A política de ciclo de vida a ser aplicada ao repositório ECR"
+variable "lifecycle_policy_enabled" {
+  type        = bool
+  default     = false
+  description = "Indica se uma política de ciclo de vida está habilitada para o repositório"
+}
+
+variable "lifecycle_policy_text" {
+  type        = string
+  default     = ""
+  description = "O texto da política de ciclo de vida para o repositório"
 }
