@@ -14,20 +14,16 @@ resource "aws_ecr_lifecycle_policy" "this_lifecycle_policy" {
   repository = aws_ecr_repository.this.name
 
   policy {
-  rules = [
-    {
+    rule {
       rule_priority = 1
-      description   = "Expire images older than 30 days"
+      description   = "Remove untagged images older than 30 days"
       selection     = {
-        tag_status = "tagged"
-        count_type = "sinceImagePushed"
-        count_unit = "days"
-        count_number = 30
+        tag_status = "untagged"
+        created_at = "<= 30"
       }
-      action = {
+      action {
         type = "expire"
       }
     }
-  ]
-}
+  }
 }
