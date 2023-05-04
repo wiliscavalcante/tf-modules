@@ -12,5 +12,5 @@ resource "aws_kms_key" "this" {
 # Cria um alias para a chave KMS, se houver um nome especificado
 resource "aws_kms_alias" "this_kms_alias" {
   name = var.alias_name
-  target_key_id = aws_kms_key.this_kms_alias.key_id
+  target_key_id = aws_kms_key.this.key_id
 }
