@@ -7,7 +7,7 @@ resource "aws_kms_key" "this" {
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
   enable_key_rotation    = true
   tags                   = var.tags
-  policy                 = var.policy
+  policy = jsonencode(var.policy)
 }
 # Cria um alias para a chave KMS, se houver um nome especificado
 resource "aws_kms_alias" "this" {
