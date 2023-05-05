@@ -44,6 +44,7 @@ data "aws_caller_identity" "current" {}
 
 module "kms_key" {
   source = "github.com/wiliscavalcante/tf-modules.git//kms-module"
+  alias_name             = "my-kms-alias-01"
   customer_master_key_spec = "SYMMETRIC_DEFAULT"
   deletion_window_in_days = 10
   description            = "Example KMS Key"
