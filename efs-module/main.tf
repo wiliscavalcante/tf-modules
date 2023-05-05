@@ -1,4 +1,4 @@
-resource "aws_efs_file_system" "efs_volume" {
+resource "aws_efs_file_system" "this" {
   creation_token = var.efs_name
   tags = {
     Name = var.efs_name
