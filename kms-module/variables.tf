@@ -46,8 +46,8 @@ variable "multi_region" {
 }
 
 variable "policy" {
-  type        = any
-  description = "A política de acesso à chave KMS."
+  type        = string
+  description = "Um documento JSON de política válido. Esta é uma política de chave, não uma política IAM."
 }
 
 variable "tags" {
