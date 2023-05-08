@@ -46,7 +46,7 @@ variable "multi_region" {
 }
 
 variable "policy" {
-  type        = map(string)
+  type        = string
   description = "Um documento JSON de política válido. Esta é uma política de chave, não uma política IAM."
 }
 
