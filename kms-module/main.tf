@@ -5,7 +5,7 @@ resource "aws_kms_key" "this" {
   enable_key_rotation    = var.enable_key_rotation
   key_usage              = var.key_usage
   multi_region           = var.multi_region
-  policy                 = jsonencode(var.policy)
+  policy                 = var.policy
   tags                   = var.tags
 }
 
