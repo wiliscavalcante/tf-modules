@@ -1,19 +1,21 @@
-provider "aws" {
-  region = "sa-east-1"  # Substitua pela região desejada
-}
-
 module "nlb" {
-  source = "./modulo"
+  source  = "./modulo"
 
-  region                       = "sa-east-1"
-  name                         = "meu-nlb-teste"
-  internal                     = false
-  subnet_ids                    = ["subnet-d2aeb4a4", "subnet-23b47078"]  # Substitua pelo ID da sua subnet
-  tags                         = { Name = "meu-nlb" }
-  enable_cross_zone_load_balancing  = true
-}
+  name                            = "my-internal-nlb"
+  subnet_ids                      = ["subnet-08d47e590ecc0f621", "subnet-08d47e590ecc0f621"]
+  enable_cross_zone_load_balancing = true
+  listener_port                   = 443
+  listener_protocol               = "TCP"
+  target_group_name               = "my-internal-nlb-target-group"
+  target_group_port               = 443
+  target_group_protocol           = "TCP"
+  vpc_id                          = "vpc-b4efa2d3"
+  target_id                       = "172.31.28.17"
+  target_type                     = "ip"  # Valor personalizado para target_type
 
-output "nlb_arn" {
-  description = "ARN do Network Load Balancer"
-  value       = module.nlb.nlb_arn
+  tags = {
+    Name = "my-internal-nlb"
+    Project = "dev"
+
+  }
 }
