@@ -1,29 +1,61 @@
-variable "region" {
-  description = "Região da AWS"
+variable "enable_cross_zone_load_balancing" {
+  description = "Habilita o balanceamento de carga entre zonas"
+  type        = bool
+}
+
+variable "listener_port" {
+  description = "Porta para o listener"
+  type        = number
+}
+
+variable "listener_protocol" {
+  description = "Protocolo para o listener"
   type        = string
 }
 
 variable "name" {
-  description = "Nome do NLB"
+  description = "Nome do NLB interno"
   type        = string
 }
 
-variable "internal" {
-  description = "Se o NLB é interno ou não"
-  type        = bool
-}
-
 variable "subnet_ids" {
-  description = "IDs das subnets"
+  description = "Lista de IDs das subnets"
   type        = list(string)
 }
 
 variable "tags" {
-  description = "Tags do recurso"
+  description = "Tags para os recursos"
   type        = map(string)
 }
-variable "enable_cross_zone_load_balancing" {
-  description = "Indica se o balanceamento de carga entre zonas está ativado"
-  type        = bool
-  default     = false
+
+variable "target_group_name" {
+  description = "Nome do target group"
+  type        = string
 }
+
+variable "target_group_port" {
+  description = "Porta para o target group"
+  type        = number
+}
+
+variable "target_group_protocol" {
+  description = "Protocolo para o target group"
+  type        = string
+}
+
+variable "target_id" {
+  description = "ID do target"
+  type        = string
+}
+
+variable "target_type" {
+  description = "Tipo de target"
+  type        = string
+  default     = "ip"
+}
+
+variable "vpc_id" {
+  description = "ID da VPC"
+  type        = string
+}
+
