@@ -44,8 +44,8 @@ variable "target_group_protocol" {
 }
 
 variable "target_id" {
-  description = "ID do target"
-  type        = string
+  description = "ID(s) do(s) target(s)"
+  type        = list(string)
 }
 
 variable "target_type" {
