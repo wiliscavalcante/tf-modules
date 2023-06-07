@@ -32,6 +32,6 @@ resource "aws_lb_target_group" "internal_nlb_target_group" {
 resource "aws_lb_target_group_attachment" "internal_nlb_attachment" {
   count            = length(var.target_id)
   target_group_arn = aws_lb_target_group.internal_nlb_target_group.arn
-  target_id        = var.target_id
+  target_id        = var.target_id[count.index]
   port             = var.target_group_port
 }
