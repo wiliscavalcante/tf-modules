@@ -31,3 +31,9 @@ variable "aws_region" {
   type        = string
   default     = "us-west-2" # Substitua pela região do seu cluster EKS
 }
+
+variable "custom_policies" {
+  description = "Lista de ARNs das políticas customizadas a serem anexadas à IAM Role"
+  type        = list(string)
+  default     = []
+}
