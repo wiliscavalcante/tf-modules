@@ -421,3 +421,54 @@ variable "account_id" {
       }))
     default = []
   }
+########################
+
+variable "service" {
+  description = "O serviço AWS que pode assumir esta role, se diferente de EKS."
+  type        = string
+  default     = ""
+}
+
+resource "aws_iam_role" "application_role" {
+  name = "BURoleFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}${upper(var.env)}"
+
+  assume_role_policy = var.service != "" ? jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Principal = {
+          Service = "${var.service}.amazonaws.com"
+        },
+        Action = "sts:AssumeRole"
+      }
+    ]
+  }) : jsonencode({
+    Version   = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = {
+          AWS       = "arn:aws:iam::${var.account_id}:root",
+          Federated = "arn:aws:iam::${var.account_id}:oidc-provider/${var.oidc_provider}"
+        },
+        Action    = "sts:AssumeRoleWithWebIdentity",
+        Condition = {
+          StringEquals = {
+            "${var.oidc_provider}:aud" = "sts.amazonaws.com",
+            "${var.oidc_provider}:sub" = "system:serviceaccount:${var.namespace}:${var.app_name}"
+          }
+        }
+      }
+    ]
+  })
+
+  permissions_boundary = "arn:aws:iam::${var.account_id}:policy/BUAdminBasePolicy"
+
+  tags = merge(
+    var.extra_tags,
+    {
+      Terraformed = "true"
+    }
+  )
+}
