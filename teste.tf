@@ -1,4 +1,6 @@
 # role.tf
+
+
 resource "aws_iam_role" "application_role" {
   name = "BURoleFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}${upper(var.env)}"
 
@@ -42,6 +44,19 @@ resource "aws_iam_role" "application_role" {
       Terraformed = "true"
     }
   )
+}
+
+# local.tf
+
+locals {
+
+  eks = {
+    namespace     = coalesce(var.eks.namespace, var.namespace)
+    oidc_provider = coalesce(var.eks.oidc_provider, var.oidc_provider)
+  }
+
+  is_eks = local.eks.oidc_provider != ""
+
 }
 
 # variables.tf
@@ -217,7 +232,6 @@ variable "cloudwatch_logs" {
         logGroup   = string
         logStream  = string
         region     = string
-        region     = string
         account_id = string
       })
       permission = object({
@@ -227,146 +241,106 @@ variable "cloudwatch_logs" {
   default = []
 }
 
-# s3.tf
-
-resource "aws_iam_role_policy" "application_policy_s3" {
-  count = length(var.s3_buckets) > 0 ? 1 : 0
-  name  = "BUPolicyFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}S3"
-  role  = aws_iam_role.application_role.id
-
-
-  policy = jsonencode({
-    Version   = "2012-10-17"
-    Statement = [
-    for bucket in var.s3_buckets :
-    {
-      Effect = "Allow"
-      Action = flatten([
-        bucket.permission.read ? [
-          "s3:ListBucket",
-          "s3:GetObjectAttributes",
-          "s3:GetBucketAcl",
-          "s3:GetObjectAcl",
-          "s3:GetObject",
-          "s3:GetObjectTagging",
-          "s3:GetBucketLocation",
-          "s3:GetObjectVersion"
-        ] : [],
-        bucket.permission.write ? [
-          "s3:ListBucketMultipartUploads",
-          "s3:PutObjectLegalHold",
-          "s3:PutObject",
-          "s3:AbortMultipartUpload"
-        ] : [],
-        bucket.permission.delete ? [
-          "s3:DeleteObject"
-        ] : []
-      ])
-      Resource = [
-        "arn:aws:s3:::${bucket.name}",
-        "arn:aws:s3:::${bucket.name}/*"
-      ]
-    }
-    ]
-  })
-}
-
-# cloudwatch-logs.tf
+# cloudwatch.tf
 
 resource "aws_iam_role_policy" "application_policy_cloudwatch_logs" {
-  count = length(var.cloudwatch_logs) > 0 ? 1 : 0
-  name  = "BUPolicyFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}CloudWatchLogs"
-  role  = aws_iam_role.application_role.id
+    count = length(var.cloudwatch_logs) > 0 ? 1 : 0
+    name  = "BUPolicyFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}CloudWatchLogs"
+    role  = aws_iam_role.application_role.id
+  
+    policy = jsonencode({
+      Version   = "2012-10-17",
+      Statement = [
+        for logs in var.cloudwatch_logs :
+        {
+          Effect = "Allow",
+          Action = flatten([
+            logs.permission.put ? [
+              "logs:CreateLogGroup",
+              "logs:CreateLogStream",
+              "logs:PutLogEvents"
+            ] : []
+          ])
+          Resource = [
+            "arn:aws:logs:${logs.id.region}:${logs.id.account_id}:log-group:${logs.id.logGroup}",
+            "arn:aws:logs:${logs.id.region}:${logs.id.account_id}:log-group:${logs.id.logGroup}:log-stream:${logs.id.logStream}"
+          ]
+        }
+      ]
+    })
+  }
 
-  policy = jsonencode({
-    Version   = "2012-10-17",
-    Statement = [
-      for logs in var.cloudwatch_logs :
+ # s3.tf
+
+ resource "aws_iam_role_policy" "application_policy_s3" {
+    count = length(var.s3_buckets) > 0 ? 1 : 0
+    name  = "BUPolicyFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}S3"
+    role  = aws_iam_role.application_role.id
+  
+  
+    policy = jsonencode({
+      Version   = "2012-10-17"
+      Statement = [
+      for bucket in var.s3_buckets :
       {
-        Effect = "Allow",
+        Effect = "Allow"
         Action = flatten([
-          logs.permission.put ? [
-            "logs:CreateLogGroup",
-            "logs:CreateLogStream",
-            "logs:PutLogEvents"
+          bucket.permission.read ? [
+            "s3:ListBucket",
+            "s3:GetObjectAttributes",
+            "s3:GetBucketAcl",
+            "s3:GetObjectAcl",
+            "s3:GetObject",
+            "s3:GetObjectTagging",
+            "s3:GetBucketLocation",
+            "s3:GetObjectVersion"
+          ] : [],
+          bucket.permission.write ? [
+            "s3:ListBucketMultipartUploads",
+            "s3:PutObjectLegalHold",
+            "s3:PutObject",
+            "s3:AbortMultipartUpload"
+          ] : [],
+          bucket.permission.delete ? [
+            "s3:DeleteObject"
           ] : []
         ])
         Resource = [
-          "arn:aws:logs:${logs.id.region}:${logs.id.account_id}:log-group:${logs.id.logGroup}",
-          "arn:aws:logs:${logs.id.region}:${logs.id.account_id}:log-group:${logs.id.logGroup}:log-stream:${logs.id.logStream}"
+          "arn:aws:s3:::${bucket.name}",
+          "arn:aws:s3:::${bucket.name}/*"
         ]
       }
-    ]
-  })
-}
+      ]
+    })
+  }
 
-# Exemplo de uso:
+# secret.tf
 
-# permissions.tf
-
-data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
-
-module "application_permissions" {
-  source = "./"
-
-  account_id    = data.aws_caller_identity.current.account_id
-  env           = var.env
-  app_name      = local.app_name
-
-   s3_buckets = [
-     for bucket_name in var.s3_bucket_names : {
-       name       = bucket_name
-       permission = {
-         read   = true
-         write  = true
-         delete = false
-       }
-     }
-   ]
-
-   secrets = [
-    for secret_name in var.secrets_names : {
-      id       = {
-        name = secret_name
-        region = local.region
+resource "aws_iam_role_policy" "application_policy_secrets_manager" {
+    count = length(var.secrets) > 0 ? 1 : 0
+    name  = "BUPolicyFor${replace(title(replace(var.app_name, "-", " ")), " ", "")}SecretsManager"
+    role  = aws_iam_role.application_role.id
+  
+  
+    policy = jsonencode({
+      Version   = "2012-10-17"
+      Statement = [
+      for secret in var.secrets :
+      {
+        Effect = "Allow"
+        Action = flatten([
+          secret.permission.read ? [
+            "secretsmanager:DescribeSecret",
+            "secretsmanager:GetSecretValue"
+          ] : []
+        ])
+        Resource = [
+          try(
+            secret.id.arn,
+            "arn:aws:secretsmanager:${secret.id.region}:${var.account_id}:secret:${secret.id.name}-??????"
+          )
+        ]
       }
-      permission = {
-        read   = true
-      }
-    }
-   ]
-
-   cloudwatch_logs = [
-     for cloudwatch_log in var.cloudwatch_logs : {
-       id       = {
-        logGroup   = string
-        logStream  = string
-        region     = local.region
-        account_id = string
-      }
-       permission = {
-        put   = true
-      }
-     }
-   ]
-
-  extra_tags = {
-    Application = local.app_name
-    Env         = var.ENV
-  }  
-}
-
-# variables-devicePixelRatio.tfvars
-
-env              = "dev"
-
-# s3_bucket_names = [
-#     "public-warehouse-dev"
-# ]
-
-secrets_names = [
-    "SM_AGROWATCH_SETTINGS_DEV",
-    "SM_DB_BRAIN_PUBLIC_DEV",
-    "SM_BRAIN_AES_ENCRYPTION_KEYS_V1"
-]
+      ]
+    })
+  }
