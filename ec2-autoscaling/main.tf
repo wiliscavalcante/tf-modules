@@ -21,9 +21,7 @@ resource "aws_launch_template" "app" {
 
   tag_specifications {
     resource_type = "instance"
-    tags = {
-      Name = "Instance-${var.project_name}"
-    }
+    tags = var.required_tags
   }
 
   user_data = var.user_data
@@ -46,9 +44,13 @@ resource "aws_autoscaling_group" "app" {
   vpc_zone_identifier = var.subnets
   health_check_type   = "EC2"
 
-  tag {
-    key                 = "Name"
-    value               = "ASG-${var.project_name}"
-    propagate_at_launch = true
+  dynamic "tag" {
+    for_each = var.required_tags
+
+    content {
+      key                 = tag.key
+      value               = tag.value
+      propagate_at_launch = true
+    }
   }
 }
