@@ -5,6 +5,7 @@ resource "aws_launch_template" "app" {
   key_name      = var.key_name
 
   block_device_mappings {
+    # Configuração para o volume raiz
     device_name = "/dev/xvda"
     ebs {
       volume_size = var.volume_size
@@ -19,9 +20,24 @@ resource "aws_launch_template" "app" {
     arn = var.iam_instance_profile_arn
   }
 
-  tag_specifications {
+tag_specifications {
     resource_type = "instance"
-    tags = var.required_tags
+    tags = merge(
+      {
+        "Name" = "instance-${var.project_name}"
+      },
+      var.required_tags
+    )
+  }
+
+  tag_specifications {
+    resource_type = "volume"
+    tags = merge(
+      {
+        "Name" = "volume-${var.project_name}"
+      },
+      var.required_tags
+    )
   }
 
   user_data = var.user_data
@@ -40,12 +56,15 @@ resource "aws_autoscaling_group" "app" {
   min_size         = var.min_size
   max_size         = var.max_size
   desired_capacity = var.desired_capacity
-
   vpc_zone_identifier = var.subnets
-  health_check_type   = "EC2"
 
   dynamic "tag" {
-    for_each = var.required_tags
+    for_each = merge(
+      {
+        "Name" = "ASG-${var.project_name}"  
+      },
+      var.required_tags
+    )
 
     content {
       key                 = tag.key
