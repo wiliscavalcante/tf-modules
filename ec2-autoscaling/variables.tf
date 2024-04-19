@@ -64,3 +64,9 @@ variable "subnets" {
   description = "A list of subnet IDs for the Auto Scaling Group."
   type        = list(string)
 }
+variable "required_tags" {
+  description = "A map of required tags to apply to all resources."
+  type        = map(string)
+  default     = {}
+}
+
